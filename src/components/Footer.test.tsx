@@ -2,8 +2,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import { RecoilRoot } from 'recoil';
 import { useParticipantList } from '../state/hooks/useParticipantList';
+import { useNameDrawal } from '../state/hooks/useNameDrawal';
 import Footer from './Footer';
 import { useNavigate } from 'react-router-dom';
+
+const mockNavigate = jest.fn();
+const mockNameDrawal = jest.fn();
 
 jest.mock('../state/hooks/useParticipantList', () => {
   return {
@@ -11,7 +15,11 @@ jest.mock('../state/hooks/useParticipantList', () => {
   };
 });
 
-const mockNavigate = jest.fn();
+jest.mock('../state/hooks/useNameDrawal', () => {
+  return {
+    useNameDrawal: () => mockNameDrawal,
+  };
+});
 
 jest.mock('react-router-dom', () => {
   return {
@@ -62,5 +70,6 @@ describe('have enough participants', () => {
     fireEvent.click(button);
     expect(mockNavigate).toHaveBeenCalledTimes(1);
     expect(mockNavigate).toHaveBeenCalledWith('/namesDraw');
+    expect(mockNameDrawal).toHaveBeenCalledTimes(1);
   });
 });
